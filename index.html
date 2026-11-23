@@ -1,0 +1,1458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>YouthLex Lab — Trilingual Gaming Vocabulary & Adaptation Platform</title>
+<style>
+  :root {
+    --bg: #f8fafc;
+    --surface: #ffffff;
+    --surface-alt: #f1f5f9;
+    --border: #e2e8f0;
+    --text: #0f172a;
+    --text-muted: #475569;
+    --primary: #1d4ed8;
+    --primary-light: #eff6ff;
+    --primary-dark: #1e3a8a;
+    --teal: #0f766e;
+    --teal-light: #f0fdfa;
+    --amber: #b45309;
+    --amber-light: #fffbeb;
+    --purple: #6d28d9;
+    --purple-light: #f5f3ff;
+    --rose: #be123c;
+    --rose-light: #fff1f2;
+    --radius: 12px;
+    --shadow: 0 1px 3px rgba(15, 23, 42, 0.08), 0 1px 2px rgba(15, 23, 42, 0.04);
+    --shadow-md: 0 4px 12px rgba(15, 23, 42, 0.08);
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+  }
+
+  /* Header & Navigation */
+  header {
+    background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 60%, #0f766e 100%);
+    color: #fff;
+    padding: 2.25rem 1.5rem 0;
+  }
+
+  .container {
+    max-width: 1140px;
+    margin: 0 auto;
+  }
+
+  .badge-top {
+    display: inline-block;
+    background: rgba(255, 255, 255, 0.14);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    padding: 0.28rem 0.75rem;
+    border-radius: 999px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    margin-bottom: 0.85rem;
+  }
+
+  header h1 {
+    font-size: clamp(1.65rem, 3.2vw, 2.35rem);
+    font-weight: 800;
+    line-height: 1.2;
+    margin-bottom: 0.65rem;
+    letter-spacing: -0.02em;
+  }
+
+  header p.subtitle {
+    max-width: 760px;
+    color: #cbd5e1;
+    font-size: 1.02rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .kpi-strip {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+    gap: 0.85rem;
+    margin-bottom: 1.75rem;
+  }
+
+  .kpi-card {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 10px;
+    padding: 0.85rem 1rem;
+  }
+
+  .kpi-num {
+    font-size: 1.45rem;
+    font-weight: 800;
+    color: #fff;
+    line-height: 1.1;
+  }
+
+  .kpi-label {
+    font-size: 0.78rem;
+    color: #cbd5e1;
+    margin-top: 0.2rem;
+  }
+
+  nav.tabs {
+    display: flex;
+    gap: 0.4rem;
+    overflow-x: auto;
+    padding-bottom: 0;
+  }
+
+  .tab-btn {
+    background: rgba(255, 255, 255, 0.08);
+    color: #e2e8f0;
+    border: none;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    padding: 0.8rem 1.2rem;
+    font-size: 0.92rem;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.18s ease;
+  }
+
+  .tab-btn:hover {
+    background: rgba(255, 255, 255, 0.18);
+    color: #fff;
+  }
+
+  .tab-btn.active {
+    background: var(--bg);
+    color: var(--primary-dark);
+  }
+
+  /* Main Layout */
+  main {
+    padding: 2rem 1.5rem 4rem;
+  }
+
+  .tab-panel {
+    display: none;
+    animation: fadeIn 0.22s ease;
+  }
+
+  .tab-panel.active {
+    display: block;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(4px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .section-header {
+    margin-bottom: 1.5rem;
+  }
+
+  .section-header h2 {
+    font-size: 1.45rem;
+    font-weight: 800;
+    color: var(--text);
+    margin-bottom: 0.35rem;
+  }
+
+  .section-header p {
+    color: var(--text-muted);
+    font-size: 0.96rem;
+    max-width: 820px;
+  }
+
+  /* Controls & Filters */
+  .filter-bar {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.15rem;
+    box-shadow: var(--shadow);
+    margin-bottom: 1.5rem;
+    display: grid;
+    grid-template-columns: 2fr 1.2fr 1.2fr auto;
+    gap: 0.85rem;
+    align-items: end;
+  }
+
+  @media (max-width: 820px) {
+    .filter-bar {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .control-group label {
+    display: block;
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: var(--text-muted);
+    margin-bottom: 0.35rem;
+  }
+
+  input[type="text"], select {
+    width: 100%;
+    padding: 0.62rem 0.85rem;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 0.94rem;
+    color: var(--text);
+    background: var(--surface);
+    outline: none;
+  }
+
+  input[type="text"]:focus, select:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.12);
+  }
+
+  .btn {
+    padding: 0.64rem 1.05rem;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: all 0.15s ease;
+  }
+
+  .btn-secondary {
+    background: var(--surface-alt);
+    color: var(--text);
+    border-color: var(--border);
+  }
+
+  .btn-secondary:hover {
+    background: #e2e8f0;
+  }
+
+  .btn-primary {
+    background: var(--primary);
+    color: #fff;
+  }
+
+  .btn-primary:hover {
+    background: var(--primary-dark);
+  }
+
+  .results-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    font-size: 0.88rem;
+    color: var(--text-muted);
+  }
+
+  /* Glossary Cards */
+  .glossary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
+    gap: 1.15rem;
+  }
+
+  .word-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.25rem;
+    box-shadow: var(--shadow);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+
+  .word-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+  }
+
+  .card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 0.5rem;
+    margin-bottom: 0.55rem;
+  }
+
+  .en-term {
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: var(--primary-dark);
+  }
+
+  .tag {
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 0.22rem 0.58rem;
+    border-radius: 999px;
+    white-space: nowrap;
+  }
+
+  .tag-direct { background: var(--primary-light); color: var(--primary-dark); }
+  .tag-hybrid { background: var(--teal-light); color: var(--teal); }
+  .tag-abbrev { background: var(--purple-light); color: var(--purple); }
+  .tag-clipped { background: var(--amber-light); color: var(--amber); }
+  .tag-native { background: var(--rose-light); color: var(--rose); }
+
+  .field-label {
+    font-size: 0.76rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    margin-bottom: 0.65rem;
+  }
+
+  .meaning-text {
+    font-size: 0.93rem;
+    color: var(--text);
+    margin-bottom: 0.9rem;
+  }
+
+  .lang-boxes {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.55rem;
+    margin-bottom: 0.85rem;
+  }
+
+  .lang-box {
+    background: var(--surface-alt);
+    border-radius: 8px;
+    padding: 0.55rem 0.7rem;
+  }
+
+  .lang-box span {
+    display: block;
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 0.15rem;
+  }
+
+  .lang-box strong {
+    font-size: 0.9rem;
+    color: var(--text);
+  }
+
+  .shift-note {
+    border-top: 1px dashed var(--border);
+    padding-top: 0.65rem;
+    font-size: 0.83rem;
+    color: var(--text-muted);
+  }
+
+  .shift-note strong {
+    color: var(--teal);
+  }
+
+  /* Two-Column Panels for Quiz & Register */
+  .two-col {
+    display: grid;
+    grid-template-columns: 1.15fr 0.85fr;
+    gap: 1.5rem;
+    align-items: start;
+  }
+
+  @media (max-width: 900px) {
+    .two-col {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .panel-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.5rem;
+    box-shadow: var(--shadow);
+  }
+
+  .panel-card h3 {
+    font-size: 1.15rem;
+    font-weight: 800;
+    margin-bottom: 0.35rem;
+  }
+
+  .panel-card p.desc {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    margin-bottom: 1.2rem;
+  }
+
+  /* Quiz Styles */
+  .quiz-progress {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.84rem;
+    font-weight: 700;
+    color: var(--primary);
+    margin-bottom: 0.75rem;
+  }
+
+  .quiz-q {
+    font-size: 1.06rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: var(--text);
+  }
+
+  .quiz-options {
+    display: grid;
+    gap: 0.6rem;
+    margin-bottom: 1rem;
+  }
+
+  .opt-btn {
+    text-align: left;
+    background: var(--surface-alt);
+    border: 1.5px solid var(--border);
+    border-radius: 9px;
+    padding: 0.75rem 1rem;
+    font-size: 0.93rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.14s ease;
+  }
+
+  .opt-btn:hover:not(:disabled) {
+    border-color: var(--primary);
+    background: var(--primary-light);
+  }
+
+  .opt-btn.correct {
+    background: #dcfce7;
+    border-color: #16a34a;
+    color: #14532d;
+    font-weight: 700;
+  }
+
+  .opt-btn.wrong {
+    background: #fee2e2;
+    border-color: #dc2626;
+    color: #7f1d1d;
+  }
+
+  .quiz-feedback {
+    background: var(--primary-light);
+    border-left: 4px solid var(--primary);
+    padding: 0.8rem 1rem;
+    border-radius: 6px;
+    font-size: 0.88rem;
+    margin-bottom: 1rem;
+    display: none;
+  }
+
+  /* Register Switcher */
+  .register-item {
+    border: 1px solid var(--border);
+    border-radius: 9px;
+    padding: 0.95rem;
+    margin-bottom: 0.85rem;
+    background: var(--bg);
+  }
+
+  .reg-informal {
+    font-weight: 700;
+    color: var(--rose);
+    font-size: 0.94rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .reg-formal-grid {
+    display: grid;
+    gap: 0.35rem;
+    font-size: 0.86rem;
+  }
+
+  .reg-formal-grid div strong {
+    display: inline-block;
+    width: 74px;
+    color: var(--teal);
+  }
+
+  /* Tables & Charts */
+  .table-wrap {
+    overflow-x: auto;
+    margin-top: 1rem;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+  }
+
+  th, td {
+    text-align: left;
+    padding: 0.75rem 0.9rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  th {
+    background: var(--surface-alt);
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  .bar-row {
+    margin-bottom: 0.85rem;
+  }
+
+  .bar-meta {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.86rem;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+  }
+
+  .bar-track {
+    width: 100%;
+    height: 10px;
+    background: var(--surface-alt);
+    border-radius: 999px;
+    overflow: hidden;
+  }
+
+  .bar-fill {
+    height: 100%;
+    border-radius: 999px;
+    background: linear-gradient(90deg, var(--primary), var(--teal));
+  }
+
+  .roadmap-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.15rem;
+    margin-top: 1.5rem;
+  }
+
+  .roadmap-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-top: 4px solid var(--teal);
+    border-radius: var(--radius);
+    padding: 1.25rem;
+    box-shadow: var(--shadow);
+  }
+
+  .roadmap-card h4 {
+    font-size: 1.04rem;
+    font-weight: 800;
+    margin-bottom: 0.45rem;
+    color: var(--text);
+  }
+
+  .roadmap-card p {
+    font-size: 0.89rem;
+    color: var(--text-muted);
+  }
+
+  footer {
+    text-align: center;
+    padding: 1.5rem;
+    color: var(--text-muted);
+    font-size: 0.83rem;
+    border-top: 1px solid var(--border);
+    background: var(--surface);
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="container">
+    <span class="badge-top">Practical Linguistic Innovation &bull; Trilingual Youth Vocabulary Tool</span>
+    <h1>YouthLex Lab: Trilingual Gaming Vocabulary &amp; Adaptation Platform</h1>
+    <p class="subtitle">
+      An interactive digital pocket glossary, register-switching trainer, and morphosyntactic explorer designed to turn youth gaming slang into structured English, Russian, and Kazakh language literacy.
+    </p>
+
+    <div class="kpi-strip">
+      <div class="kpi-card">
+        <div class="kpi-num">76 Terms</div>
+        <div class="kpi-label">Classified English-origin gaming lexemes</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-num">6 Fields</div>
+        <div class="kpi-label">Semantic domains from combat to streaming</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-num">71%</div>
+        <div class="kpi-label">Direct loans (42%) &amp; hybrid derivatives (29%)</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-num">84.7%</div>
+        <div class="kpi-label">Students avoiding slang with teachers (register awareness)</div>
+      </div>
+    </div>
+
+    <nav class="tabs" role="tablist">
+      <button class="tab-btn active" data-tab="glossary">1. Pocket Glossary</button>
+      <button class="tab-btn" data-tab="classroom">2. Vocabulary Builder &amp; Quiz</button>
+      <button class="tab-btn" data-tab="adaptation">3. Trilingual Adaptation Lab</button>
+      <button class="tab-btn" data-tab="research">4. Empirical Insights &amp; Roadmap</button>
+    </nav>
+  </div>
+</header>
+
+<main class="container">
+
+  <!-- TAB 1: POCKET GLOSSARY -->
+  <section id="glossary" class="tab-panel active">
+    <div class="section-header">
+      <h2>Interactive Trilingual Pocket Glossary</h2>
+      <p>
+        Explore how English gaming terms enter Kazakhstani teenage speech, adapt morphologically into Russian and Kazakh, and acquire figurative meanings in everyday school life.
+      </p>
+    </div>
+
+    <div class="filter-bar">
+      <div class="control-group">
+        <label for="searchInput">Search English, Russian, Kazakh, or Meaning</label>
+        <input type="text" id="searchInput" placeholder="Try: farm, лаг, донат, carry, изи, toxic...">
+      </div>
+      <div class="control-group">
+        <label for="fieldFilter">Semantic Field</label>
+        <select id="fieldFilter">
+          <option value="all">All 6 Semantic Fields</option>
+          <option value="Combat and tactics">Combat &amp; Tactics (29%)</option>
+          <option value="Progress and economy">Progress &amp; Economy (18%)</option>
+          <option value="Technical">Technical Vocabulary (17%)</option>
+          <option value="Evaluation & emotion">Evaluation &amp; Emotion (16%)</option>
+          <option value="Team and social">Team &amp; Social Roles (14%)</option>
+          <option value="Media & streaming">Media &amp; Streaming (5%)</option>
+        </select>
+      </div>
+      <div class="control-group">
+        <label for="typeFilter">Adaptation Type</label>
+        <select id="typeFilter">
+          <option value="all">All 5 Adaptation Types</option>
+          <option value="Direct loan">Direct Loan (42%)</option>
+          <option value="Hybrid derivative">Hybrid Derivative (29%)</option>
+          <option value="Abbreviation">Abbreviation (16%)</option>
+          <option value="Clipped form">Clipped Form (8%)</option>
+          <option value="Native-word shift">Native-Word Shift (5%)</option>
+        </select>
+      </div>
+      <button class="btn btn-secondary" id="resetFilters">Reset</button>
+    </div>
+
+    <div class="results-meta">
+      <span id="resultsCount">Showing 22 representative terms</span>
+      <span>Tip: Filter by "Hybrid derivative" to compare Russian affixes vs. Kazakh helper verbs</span>
+    </div>
+
+    <div class="glossary-grid" id="glossaryGrid"></div>
+  </section>
+
+  <!-- TAB 2: CLASSROOM VOCABULARY BUILDER & QUIZ -->
+  <section id="classroom" class="tab-panel">
+    <div class="section-header">
+      <h2>15-Minute Classroom Module: Etymology &amp; Register Literacy</h2>
+      <p>
+        Designed for English, Russian, and Kazakh lessons. Instead of banning youth slang, teachers can use familiar gaming words to teach root etymology, word formation, and formal vs. informal register switching.
+      </p>
+    </div>
+
+    <div class="two-col">
+      <!-- Interactive Quiz -->
+      <div class="panel-card">
+        <h3>"Find the Source" — 12-Word Linguistic Challenge</h3>
+        <p class="desc">Identify the English root, morphological pattern, or semantic shift behind common youth gaming terms.</p>
+
+        <div class="quiz-progress">
+          <span id="qCounter">Question 1 of 12</span>
+          <span id="qScore">Score: 0 / 0</span>
+        </div>
+
+        <div class="quiz-q" id="quizQuestion"></div>
+        <div class="quiz-options" id="quizOptions"></div>
+        <div class="quiz-feedback" id="quizFeedback"></div>
+
+        <div style="display:flex; gap:0.6rem;">
+          <button class="btn btn-primary" id="nextQBtn" style="display:none;">Next Question &rarr;</button>
+          <button class="btn btn-secondary" id="restartQBtn">Restart Quiz</button>
+        </div>
+      </div>
+
+      <!-- Register Switcher -->
+      <div class="panel-card">
+        <h3>Trilingual Register &amp; Style Switcher</h3>
+        <p class="desc">
+          Survey data shows teenagers actively use slang with peers (80.6% face-to-face) but switch to standard language with teachers (84.7%). Practice translating peer gaming expressions into formal academic style.
+        </p>
+
+        <div class="control-group" style="margin-bottom:1rem;">
+          <label for="registerSelect">Choose a Real-World Teenager Utterance</label>
+          <select id="registerSelect"></select>
+        </div>
+
+        <div id="registerDisplay"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TAB 3: TRILINGUAL ADAPTATION LAB -->
+  <section id="adaptation" class="tab-panel">
+    <div class="section-header">
+      <h2>Trilingual Morphosyntactic &amp; Semantic Adaptation Lab</h2>
+      <p>
+        When an English gaming term enters Kazakhstan's bilingual environment, it passes through two contrasting grammatical systems simultaneously.
+      </p>
+    </div>
+
+    <div class="panel-card" style="margin-bottom:1.5rem;">
+      <h3>1. Grammatical Contrast: Russian Affixation vs. Kazakh Helper Verbs &amp; Agglutination</h3>
+      <p class="desc">
+        Russian integrates English roots via prefixes and verb suffixes (<em>-и-ть, за-, на-</em>), whereas Kazakh preserves the borrowed stem as a nominal base and pairs it with light/helper verbs (<em>жасау, салу, болу, алу, шығу</em>) or attaches agglutinative case and personal suffixes.
+      </p>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Part of Speech / Function</th>
+              <th>English Source</th>
+              <th>Russian Adaptation Strategy</th>
+              <th>Kazakh Adaptation Strategy</th>
+              <th>Linguistic Mechanism</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Action / Process (Verb)</strong></td>
+              <td><em>farm</em> (collect resources)</td>
+              <td><strong>фармить / нафармить</strong> (prefix + verb suffix)</td>
+              <td><strong>фарм жасау / фармдау</strong> (noun + helper verb <em>жасау</em>)</td>
+              <td>Derivational affixation (RU) vs. analytical light-verb construction (KZ)</td>
+            </tr>
+            <tr>
+              <td><strong>Action / Transaction</strong></td>
+              <td><em>donate</em> (in-game payment)</td>
+              <td><strong>донатить / задонатить</strong> (perfective prefix <em>за-</em>)</td>
+              <td><strong>донат салу / донат жіберу</strong> (noun + helper verb <em>салу</em>)</td>
+              <td>Aspectual verb formation (RU) vs. noun-verb collocation (KZ)</td>
+            </tr>
+            <tr>
+              <td><strong>State / Technical Event</strong></td>
+              <td><em>lag</em> (connection delay)</td>
+              <td><strong>лагать / залагал</strong> (infinitive &amp; past tense suffix)</td>
+              <td><strong>лаг болу / лаг ұстау</strong> (noun + auxiliary <em>болу</em>)</td>
+              <td>Verbalization (RU) vs. existential/state construction (KZ)</td>
+            </tr>
+            <tr>
+              <td><strong>Sanction / Result</strong></td>
+              <td><em>ban</em> (block account)</td>
+              <td><strong>забанить / получить бан</strong> (prefixed transitive verb)</td>
+              <td><strong>бан алу / банға кету</strong> (dative case <em>-ға</em> + motion verb)</td>
+              <td>Transitive prefixation (RU) vs. case inflection + helper verb (KZ)</td>
+            </tr>
+            <tr>
+              <td><strong>Location / Movement</strong></td>
+              <td><em>raid / stream</em></td>
+              <td><strong>на рейде / на стриме</strong> (preposition + prepositional case)</td>
+              <td><strong>рейдке шығу / стримде</strong> (dative <em>-ке</em> / locative <em>-де</em>)</td>
+              <td>Prepositional phrase (RU) vs. agglutinative case suffixes (KZ)</td>
+            </tr>
+            <tr>
+              <td><strong>Personal Evaluation</strong></td>
+              <td><em>noob</em> (beginner)</td>
+              <td><strong>ты нуб / нубский</strong> (zero copula / adjectival suffix)</td>
+              <td><strong>сен нубсың</strong> (2nd-person predicative suffix <em>-сың</em>)</td>
+              <td>Analytical predicate (RU) vs. personal agreement suffix (KZ)</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="panel-card">
+      <h3>2. Four Pathways of Semantic Change Beyond Games</h3>
+      <p class="desc">How game-specific vocabulary acquires everyday figurative meanings in school and peer conversations.</p>
+      <div class="glossary-grid" style="margin-top:1rem;">
+        <div class="word-card">
+          <div>
+            <div class="card-top">
+              <span class="en-term">Narrowing</span>
+              <span class="tag tag-direct">Specialization</span>
+            </div>
+            <p class="meaning-text">
+              <strong>Example: <em>feed</em> (фидить)</strong> — In standard English, "to give food." In multiplayer games, narrowed strictly to dying repeatedly and feeding experience/gold to the opposing team.
+            </p>
+          </div>
+        </div>
+        <div class="word-card">
+          <div>
+            <div class="card-top">
+              <span class="en-term">Broadening</span>
+              <span class="tag tag-clipped">Generalization</span>
+            </div>
+            <p class="meaning-text">
+              <strong>Example: <em>noob</em> (нуб / нубсың)</strong> — Shortened from "newbie" (new player), broadened to describe anyone clumsy or inexperienced in sports, math, or daily tasks (68.1% non-gaming use).
+            </p>
+          </div>
+        </div>
+        <div class="word-card">
+          <div>
+            <div class="card-top">
+              <span class="en-term">Pejoration</span>
+              <span class="tag tag-hybrid">Evaluative Shift</span>
+            </div>
+            <p class="meaning-text">
+              <strong>Example: <em>toxic</em> (токсик)</strong> — Shifted from "poisonous substance" to a strong social label for aggressive, insulting, or negative people online and offline (72.2% non-gaming use).
+            </p>
+          </div>
+        </div>
+        <div class="word-card">
+          <div>
+            <div class="card-top">
+              <span class="en-term">Metaphorical Extension</span>
+              <span class="tag tag-native">Figurative Transfer</span>
+            </div>
+            <p class="meaning-text">
+              <strong>Examples: <em>lag</em> &amp; <em>carry</em></strong> — Saying "my brain is lagging" (63.9% outside games) when tired in class, or "carrying" (затащить, 61.1%) a whole group school project alone.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TAB 4: EMPIRICAL INSIGHTS & FUTURE ROADMAP -->
+  <section id="research" class="tab-panel">
+    <div class="section-header">
+      <h2>Empirical Survey Findings &amp; Future Innovations Roadmap</h2>
+      <p>
+        Summary of the 76-item lexical classification and questionnaire data (N = 72 students, grades 8–11), paired with next-stage research and ed-tech innovations.
+      </p>
+    </div>
+
+    <div class="two-col">
+      <div class="panel-card">
+        <h3>Top Recognized Gaming Terms (N = 72)</h3>
+        <p class="desc">Six core terms are understood by more than 90% of students, even those who rarely play video games.</p>
+        <div id="recognitionBars"></div>
+      </div>
+
+      <div class="panel-card">
+        <h3>Social Context &amp; Register Gradient</h3>
+        <p class="desc">Percentage of respondents using gaming vocabulary across communication settings.</p>
+        <div id="contextBars"></div>
+      </div>
+    </div>
+
+    <div class="section-header" style="margin-top:2rem;">
+      <h2>Next-Generation Project Innovations</h2>
+      <p>Scalable extensions transforming this study from a static glossary into a long-term educational and linguistic resource.</p>
+    </div>
+
+    <div class="roadmap-grid">
+      <div class="roadmap-card">
+        <h4>1. Multi-Region Recorded Teen Speech Corpus</h4>
+        <p>
+          Expand beyond single-school convenience sampling by building an anonymized, ethics-approved audio and chat corpus across multiple regions of Kazakhstan to measure exact Kazakh vs. Russian adaptation frequencies.
+        </p>
+      </div>
+      <div class="roadmap-card">
+        <h4>2. Trilingual Morphological Parser Prototype</h4>
+        <p>
+          Develop a rule-based NLP lookup tool that automatically splits hybrid teen words (e.g., <em>задонатил</em>, <em>стримде</em>, <em>фарм жасау</em>) into English root + Russian/Kazakh grammatical morphemes for language learners.
+        </p>
+      </div>
+      <div class="roadmap-card">
+        <h4>3. Longitudinal Slang Lifecycle Tracker</h4>
+        <p>
+          Conduct annual cohort re-testing to track which gaming loanwords remain stable in general youth speech (like <em>lag</em> or <em>toxic</em>) and which fade within a single gaming season.
+        </p>
+      </div>
+      <div class="roadmap-card">
+        <h4>4. School-Wide Trilingual Etymology Micro-Lessons</h4>
+        <p>
+          Package the 15-minute "Find the Source" and Register Switcher activities into ready-to-use lesson cards for English, Russian, and Kazakh language teachers.
+        </p>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  YouthLex Lab &bull; Anonymized Educational Prototype for Trilingual Youth Lexicology &amp; Classroom Language Awareness
+</footer>
+
+<script>
+  // 1. GLOSSARY DATA (Representative entries across all 6 semantic fields & 5 adaptation types)
+  const glossaryData = [
+    {
+      en: "lag",
+      field: "Technical",
+      type: "Hybrid derivative",
+      meaning: "Delay between a player's action and the server's response.",
+      ru: "лагать, залагал, лаг",
+      kz: "лаг болу, лаг ұстау",
+      shift: "Metaphorical extension: used for slow thinking or tiredness ('brain is lagging', 63.9% outside games)."
+    },
+    {
+      en: "farm",
+      field: "Progress and economy",
+      type: "Hybrid derivative",
+      meaning: "Repeating an action systematically to gather in-game resources, gold, or points.",
+      ru: "фармить, нафармить",
+      kz: "фарм жасау, фармдау",
+      shift: "Metaphorical extension: grinding homework, test points, or likes on social media (40.3% outside games)."
+    },
+    {
+      en: "donate",
+      field: "Progress and economy",
+      type: "Hybrid derivative",
+      meaning: "Real money spent inside a game or sent to support a live streamer.",
+      ru: "донатить, задонатить, донат",
+      kz: "донат салу, донат жіберу",
+      shift: "Recognized by 94.4% of surveyed students; used broadly for online tipping and crowdfunding."
+    },
+    {
+      en: "ban",
+      field: "Team and social",
+      type: "Hybrid derivative",
+      meaning: "Official blocking or suspension of a player, account, or character.",
+      ru: "забанить, бан, в бане",
+      kz: "бан алу, банға кету",
+      shift: "Broadening: applied to blocking someone on social media or getting grounded/excluded."
+    },
+    {
+      en: "rush",
+      field: "Combat and tactics",
+      type: "Hybrid derivative",
+      meaning: "Attacking an objective or enemy position quickly and all at once.",
+      ru: "рашить, зарашить, раш",
+      kz: "раш жасау",
+      shift: "Metaphorical extension: rushing through a test or finishing an assignment in the last five minutes."
+    },
+    {
+      en: "raid",
+      field: "Combat and tactics",
+      type: "Direct loan",
+      meaning: "Coordinated group attack on a powerful boss, dungeon, or enemy base.",
+      ru: "рейд, пойти в рейд",
+      kz: "рейдке шығу",
+      shift: "Demonstrates Kazakh dative case inflection (-ке) attached directly to the English stem."
+    },
+    {
+      en: "clutch",
+      field: "Combat and tactics",
+      type: "Direct loan",
+      meaning: "Winning a difficult round single-handedly when outnumbered in the final seconds.",
+      ru: "клатч, затащить клатч",
+      kz: "клатч жасау",
+      shift: "Insider term (54.2% recognition) transferring to last-second success in sports or exams."
+    },
+    {
+      en: "nerf",
+      field: "Progress and economy",
+      type: "Hybrid derivative",
+      meaning: "Weakening an overly strong weapon, skill, or character in a game update.",
+      ru: "нерфить, понерфили",
+      kz: "нерф жасау",
+      shift: "Figurative use when rules become stricter or a student's advantage is reduced."
+    },
+    {
+      en: "loot",
+      field: "Progress and economy",
+      type: "Hybrid derivative",
+      meaning: "Items, gear, or rewards collected from defeated enemies or chests.",
+      ru: "лут, лутать, залутать",
+      kz: "лут жинау",
+      shift: "Used playfully for shopping hauls, snacks, or useful study notes."
+    },
+    {
+      en: "stream",
+      field: "Media & streaming",
+      type: "Hybrid derivative",
+      meaning: "Live video broadcast of gameplay or commentary on online platforms.",
+      ru: "стримить, стрим, стример",
+      kz: "стрим жасау, стримде",
+      shift: "Known by 91.7% of teens; takes Kazakh locative suffix (-де) in everyday speech."
+    },
+    {
+      en: "noob",
+      field: "Team and social",
+      type: "Clipped form",
+      meaning: "Clipped from 'newbie'; an inexperienced or clumsy player.",
+      ru: "нуб, нубский",
+      kz: "нуб, нубсың",
+      shift: "Broadening: applied to beginners in any school subject or sport (68.1% outside games)."
+    },
+    {
+      en: "toxic",
+      field: "Evaluation & emotion",
+      type: "Direct loan",
+      meaning: "Aggressive, insulting, or chronically negative player who ruins team morale.",
+      ru: "токсик, токсичный",
+      kz: "токсик",
+      shift: "Pejoration: widely used outside games (72.2%) to describe unhealthy peer behavior."
+    },
+    {
+      en: "GG",
+      field: "Evaluation & emotion",
+      type: "Abbreviation",
+      meaning: "Initialism for 'Good Game', typed at the end of a match.",
+      ru: "гг, ггшка",
+      kz: "гг",
+      shift: "Highest recognition (97.2%). Uppercase 'GG' signals respect; lowercase 'gg' often marks irony."
+    },
+    {
+      en: "AFK",
+      field: "Technical",
+      type: "Abbreviation",
+      meaning: "Initialism for 'Away From Keyboard'; temporarily inactive during a match.",
+      ru: "афк, стоять в афк",
+      kz: "афк болу",
+      shift: "Used in class or group chats to mean someone is mentally zoned out or unavailable."
+    },
+    {
+      en: "izi (easy)",
+      field: "Evaluation & emotion",
+      type: "Clipped form",
+      meaning: "Phonetic respelling of 'easy'; winning effortlessly.",
+      ru: "изи, на изи",
+      kz: "изи",
+      shift: "Top non-gaming transfer (76.4%): used after an easy test or simple task."
+    },
+    {
+      en: "imba",
+      field: "Evaluation & emotion",
+      type: "Clipped form",
+      meaning: "Clipped from 'imbalanced'; something overpowered or extraordinarily good.",
+      ru: "имба, имбовый",
+      kz: "имба",
+      shift: "Evaluative broadening: praising a great gadget, meal, or exam cheat-sheet."
+    },
+    {
+      en: "carry",
+      field: "Team and social",
+      type: "Native-word shift",
+      meaning: "Leading a weak team to victory through individual skill (paired with RU 'затащить').",
+      ru: "кэрри, затащить",
+      kz: "кэрри, алып шығу",
+      shift: "Metaphorical extension (61.1%): doing all the work in a group presentation."
+    },
+    {
+      en: "to dump a match",
+      field: "Combat and tactics",
+      type: "Native-word shift",
+      meaning: "Losing or throwing away an easily winnable match (RU 'слить катку').",
+      ru: "слить катку",
+      kz: "катканы жіберіп алу",
+      shift: "Figurative transfer (52.8%): failing an exam or wasting a good opportunity."
+    },
+    {
+      en: "ping",
+      field: "Technical",
+      type: "Direct loan",
+      meaning: "Network latency measured in milliseconds between device and game server.",
+      ru: "пинг, высокий пинг",
+      kz: "пинг",
+      shift: "Used humorously when someone reacts slowly to a joke or question ('high ping')."
+    },
+    {
+      en: "patch",
+      field: "Technical",
+      type: "Direct loan",
+      meaning: "Software update fixing bugs or adjusting game balance.",
+      ru: "патч, новый патч",
+      kz: "патч",
+      shift: "Direct technical borrowing with Cyrillic orthographic adaptation."
+    },
+    {
+      en: "tilt",
+      field: "Evaluation & emotion",
+      type: "Direct loan",
+      meaning: "State of emotional frustration causing a player to make worse decisions.",
+      ru: "тильт, в тильте, тильтовать",
+      kz: "тильт болу",
+      shift: "Used outside games for academic burnout or frustration after a bad grade."
+    },
+    {
+      en: "gank",
+      field: "Combat and tactics",
+      type: "Hybrid derivative",
+      meaning: "Sudden ambush on an unsuspecting player by opponents from another lane.",
+      ru: "ганк, гангать",
+      kz: "ганк жасау",
+      shift: "Insider tactical term (30.6% recognition), mostly known to regular MOBA players."
+    }
+  ];
+
+  // 2. RENDER GLOSSARY
+  const glossaryGrid = document.getElementById("glossaryGrid");
+  const searchInput = document.getElementById("searchInput");
+  const fieldFilter = document.getElementById("fieldFilter");
+  const typeFilter = document.getElementById("typeFilter");
+  const resultsCount = document.getElementById("resultsCount");
+
+  function getTagClass(type) {
+    if (type === "Direct loan") return "tag-direct";
+    if (type === "Hybrid derivative") return "tag-hybrid";
+    if (type === "Abbreviation") return "tag-abbrev";
+    if (type === "Clipped form") return "tag-clipped";
+    return "tag-native";
+  }
+
+  function renderGlossary() {
+    const query = searchInput.value.trim().toLowerCase();
+    const fieldVal = fieldFilter.value;
+    const typeVal = typeFilter.value;
+
+    const filtered = glossaryData.filter(item => {
+      const matchesField = fieldVal === "all" || item.field === fieldVal;
+      const matchesType = typeVal === "all" || item.type === typeVal;
+      const matchesSearch = !query ||
+        item.en.toLowerCase().includes(query) ||
+        item.ru.toLowerCase().includes(query) ||
+        item.kz.toLowerCase().includes(query) ||
+        item.meaning.toLowerCase().includes(query) ||
+        item.shift.toLowerCase().includes(query);
+      return matchesField && matchesType && matchesSearch;
+    });
+
+    resultsCount.textContent = `Showing ${filtered.length} of ${glossaryData.length} curated entries (from the 76-term corpus)`;
+
+    if (filtered.length === 0) {
+      glossaryGrid.innerHTML = `<div class="panel-card" style="grid-column:1/-1; text-align:center;">
+        No terms match your current filters. Click <strong>Reset</strong> to view all entries.
+      </div>`;
+      return;
+    }
+
+    glossaryGrid.innerHTML = filtered.map(item => `
+      <article class="word-card">
+        <div>
+          <div class="card-top">
+            <span class="en-term">${item.en}</span>
+            <span class="tag ${getTagClass(item.type)}">${item.type}</span>
+          </div>
+          <div class="field-label">${item.field}</div>
+          <p class="meaning-text">${item.meaning}</p>
+          <div class="lang-boxes">
+            <div class="lang-box">
+              <span>Russian Form</span>
+              <strong>${item.ru}</strong>
+            </div>
+            <div class="lang-box">
+              <span>Kazakh Pattern</span>
+              <strong>${item.kz}</strong>
+            </div>
+          </div>
+        </div>
+        <div class="shift-note">
+          <strong>Everyday &amp; Semantic Note:</strong> ${item.shift}
+        </div>
+      </article>
+    `).join("");
+  }
+
+  searchInput.addEventListener("input", renderGlossary);
+  fieldFilter.addEventListener("change", renderGlossary);
+  typeFilter.addEventListener("change", renderGlossary);
+  document.getElementById("resetFilters").addEventListener("click", () => {
+    searchInput.value = "";
+    fieldFilter.value = "all";
+    typeFilter.value = "all";
+    renderGlossary();
+  });
+
+  // 3. CLASSROOM QUIZ DATA ("Find the Source" — 12 Questions)
+  const quizQuestions = [
+    {
+      q: "1. What is the original English word behind the youth slang term 'нуб' / 'нубсың'?",
+      options: ["Nobody", "Newbie (a beginner)", "Number", "Noble"],
+      answer: 1,
+      explanation: "'Noob' is a clipped and phonetically reshaped form of 'newbie' (beginner), broadened in youth speech to mean anyone inexperienced."
+    },
+    {
+      q: "2. How does Kazakh typically adapt an English action verb like 'farm'?",
+      options: [
+        "By adding Russian prefixes like за- and на-",
+        "By keeping the stem as a noun + helper verb (фарм жасау)",
+        "By translating it into classical Arabic",
+        "By never using it in speech"
+      ],
+      answer: 1,
+      explanation: "Kazakh typically preserves the English stem as a nominal base and pairs it with a helper verb such as жасау, салу, болу, or алу."
+    },
+    {
+      q: "3. Which semantic shift happened when 'toxic' (токсик) came to describe an insulting person?",
+      options: ["Narrowing", "Pejoration (shift toward a negative social label)", "Abbreviation", "Acronym formation"],
+      answer: 1,
+      explanation: "Pejoration occurs when a word acquires a negative evaluative meaning; 72.2% of surveyed teens use 'toxic' outside games."
+    },
+    {
+      q: "4. What does the gaming abbreviation 'AFK' (афк) stand for?",
+      options: ["All For Kills", "Away From Keyboard", "Attack Fast King", "Always Fighting Kids"],
+      answer: 1,
+      explanation: "AFK ('Away From Keyboard') is a fast chat initialism indicating a player has stepped away from their device."
+    },
+    {
+      q: "5. Saying 'My brain is lagging during math class' is an example of:",
+      options: ["Metaphorical extension", "Code-switching", "Cliticization", "Orthographic error"],
+      answer: 0,
+      explanation: "Metaphorical extension transfers a technical server delay ('lag') to human tiredness or slow thinking (63.9% non-gaming use)."
+    },
+    {
+      q: "6. Which English word is the source of the clipped slang adjective 'имба' (overpowered)?",
+      options: ["Impact", "Imbalanced", "Impossible", "Import"],
+      answer: 1,
+      explanation: "'Imba' is clipped from 'imbalanced', originally describing an unfair game item and later broadened to praise anything impressive."
+    },
+    {
+      q: "7. In the classification of 76 gaming terms, which adaptation type is the largest (42%)?",
+      options: ["Direct loans", "Native-word shifts", "Abbreviations", "Clipped forms"],
+      answer: 0,
+      explanation: "Direct loans make up 42% (32 items), followed by hybrid derivatives at 29% (22 items)."
+    },
+    {
+      q: "8. What is the difference between uppercase 'GG' and lowercase 'gg' in youth chat?",
+      options: [
+        "There is no difference",
+        "Uppercase 'GG' is a genuine 'Good Game', while lowercase 'gg' often signals irony",
+        "Lowercase 'gg' means 'Go Get'",
+        "Uppercase 'GG' is only used in Kazakh"
+      ],
+      answer: 1,
+      explanation: "Capitalization carries pragmatic tone online: 'GG' marks a respectful match ending, whereas 'gg' can signal sarcastic defeat."
+    },
+    {
+      q: "9. What does 'to carry' (кэрри / затащить) mean when transferred to school life?",
+      options: [
+        "Carrying heavy textbooks",
+        "Doing almost all the work so a group project succeeds",
+        "Arriving late to class",
+        "Deleting a presentation"
+      ],
+      answer: 1,
+      explanation: "In games, carrying means winning for a weak team; in school, 61.1% of teens use it for saving a group assignment."
+    },
+    {
+      q: "10. Which English verb underwent semantic narrowing to mean 'dying repeatedly and giving points to enemies'?",
+      options: ["Loot", "Feed (фидить)", "Patch", "Ping"],
+      answer: 1,
+      explanation: "'To feed' narrowed from 'give food' in general English to feeding experience/gold to opponents in multiplayer games."
+    },
+    {
+      q: "11. Why did the study exclude full English sentences like 'good luck, have fun' from the 76-item glossary?",
+      options: [
+        "They are too short",
+        "They represent multi-word code-switching rather than single adapted loanwords",
+        "They are only used by teachers",
+        "They have no vowels"
+      ],
+      answer: 1,
+      explanation: "Following Poplack's framework, full phrases are code-switches, whereas adapted single lexemes/fixed terms count as borrowings."
+    },
+    {
+      q: "12. What do survey results show about where teenagers use gaming words?",
+      options: [
+        "Equally with teachers and friends",
+        "Over 80% with friends, but 84.7% avoid them with teachers — showing strong register awareness",
+        "Only at home with parents",
+        "Never in face-to-face talk"
+      ],
+      answer: 1,
+      explanation: "Teenagers show conscious sociolinguistic awareness, reserving gaming slang for peers while switching to formal registers at school."
+    }
+  ];
+
+  let currentQ = 0;
+  let score = 0;
+  let answeredCount = 0;
+
+  const qCounter = document.getElementById("qCounter");
+  const qScore = document.getElementById("qScore");
+  const quizQuestion = document.getElementById("quizQuestion");
+  const quizOptions = document.getElementById("quizOptions");
+  const quizFeedback = document.getElementById("quizFeedback");
+  const nextQBtn = document.getElementById("nextQBtn");
+  const restartQBtn = document.getElementById("restartQBtn");
+
+  function loadQuestion() {
+    const item = quizQuestions[currentQ];
+    qCounter.textContent = `Question ${currentQ + 1} of ${quizQuestions.length}`;
+    qScore.textContent = `Score: ${score} / ${answeredCount}`;
+    quizQuestion.textContent = item.q;
+    quizFeedback.style.display = "none";
+    nextQBtn.style.display = "none";
+
+    quizOptions.innerHTML = item.options.map((opt, idx) => `
+      <button class="opt-btn" data-idx="${idx}">${opt}</button>
+    `).join("");
+
+    document.querySelectorAll(".opt-btn").forEach(btn => {
+      btn.addEventListener("click", () => handleAnswer(parseInt(btn.dataset.idx, 10)));
+    });
+  }
+
+  function handleAnswer(selectedIdx) {
+    const item = quizQuestions[currentQ];
+    const buttons = document.querySelectorAll(".opt-btn");
+    buttons.forEach(b => b.disabled = true);
+
+    answeredCount++;
+    if (selectedIdx === item.answer) {
+      score++;
+      buttons[selectedIdx].classList.add("correct");
+      quizFeedback.innerHTML = `<strong>Correct!</strong> ${item.explanation}`;
+    } else {
+      buttons[selectedIdx].classList.add("wrong");
+      buttons[item.answer].classList.add("correct");
+      quizFeedback.innerHTML = `<strong>Not quite.</strong> ${item.explanation}`;
+    }
+
+    qScore.textContent = `Score: ${score} / ${answeredCount}`;
+    quizFeedback.style.display = "block";
+
+    if (currentQ < quizQuestions.length - 1) {
+      nextQBtn.style.display = "inline-block";
+    } else {
+      quizFeedback.innerHTML += `<br><br><strong>Challenge Complete!</strong> Final Score: ${score} out of ${quizQuestions.length}.`;
+    }
+  }
+
+  nextQBtn.addEventListener("click", () => {
+    currentQ++;
+    loadQuestion();
+  });
+
+  restartQBtn.addEventListener("click", () => {
+    currentQ = 0;
+    score = 0;
+    answeredCount = 0;
+    loadQuestion();
+  });
+
+  // 4. REGISTER SWITCHER DATA
+  const registerExamples = [
+    {
+      label: "1. Tiredness in class ('Brain is lagging')",
+      slang: "«Бүгін миым қатты лаг болып тұр» / «Мозг сегодня жестко лагает»",
+      en: "I am having difficulty concentrating and processing information today.",
+      ru: "Мне сегодня трудно сосредоточиться и быстро воспринимать информацию.",
+      kz: "Бүгін зейінімді шоғырландырып, ақпаратты тез қабылдау қиын болып тұр."
+    },
+    {
+      label: "2. Group project effort ('Carried the team')",
+      slang: "«Бүкіл жобаны өзім кэрри қылдым» / «Я один затащил весь групповой проект»",
+      en: "I completed the majority of the work to ensure our group project succeeded.",
+      ru: "Я выполнил основную часть работы, чтобы наш групповой проект прошёл успешно.",
+      kz: "Топтық жобамыз сәтті шығуы үшін жұмыстың негізгі бөлігін өзім орындадым."
+    },
+    {
+      label: "3. Easy exam result ('That test was izi')",
+      slang: "«Бүгінгі бақылау таза изи болды» / «Контрольная была на изи»",
+      en: "Today's assessment was straightforward and manageable.",
+      ru: "Сегодняшняя контрольная работа оказалась несложной и вполне выполнимой.",
+      kz: "Бүгінгі бақылау жұмысы жеңіл әрі түсінікті болды."
+    },
+    {
+      label: "4. Unkind peer behavior ('Being toxic')",
+      slang: "«Ол чатта тым токсик болып кетті» / «Он слишком токсично общается»",
+      en: "His communication style in the group chat is disrespectful and discouraging.",
+      ru: "Его манера общения в чате носит неуважительный и недоброжелательный характер.",
+      kz: "Оның топтық чаттағы қарым-қатынас мәнері сыйластыққа сай емес."
+    }
+  ];
+
+  const registerSelect = document.getElementById("registerSelect");
+  const registerDisplay = document.getElementById("registerDisplay");
+
+  registerSelect.innerHTML = registerExamples.map((ex, i) => `<option value="${i}">${ex.label}</option>`).join("");
+
+  function renderRegister() {
+    const ex = registerExamples[registerSelect.value];
+    registerDisplay.innerHTML = `
+      <div class="register-item">
+        <div class="reg-informal">Peer Gaming Register: ${ex.slang}</div>
+        <div class="reg-formal-grid">
+          <div><strong>English:</strong> ${ex.en}</div>
+          <div><strong>Russian:</strong> ${ex.ru}</div>
+          <div><strong>Kazakh:</strong> ${ex.kz}</div>
+        </div>
+      </div>
+    `;
+  }
+
+  registerSelect.addEventListener("change", renderRegister);
+
+  // 5. CHARTS IN TAB 4
+  const recognitionData = [
+    { label: "GG (Good Game)", pct: 97.2 },
+    { label: "lag (лагать / лаг болу)", pct: 95.8 },
+    { label: "donate (донат / донат салу)", pct: 94.4 },
+    { label: "noob (нуб / нубсың)", pct: 93.1 },
+    { label: "stream (стрим / стримде)", pct: 91.7 },
+    { label: "ban (забанить / бан алу)", pct: 90.3 },
+    { label: "farm (фармить / фарм жасау)", pct: 75.0 },
+    { label: "rush (рашить / раш жасау)", pct: 70.8 },
+    { label: "clutch (клатч)", pct: 54.2 },
+    { label: "gank (ганк)", pct: 30.6 }
+  ];
+
+  const contextData = [
+    { label: "In-game chat", pct: 91.7 },
+    { label: "Messengers with friends", pct: 87.5 },
+    { label: "Face-to-face with friends", pct: 80.6 },
+    { label: "Social media comments", pct: 61.1 },
+    { label: "At home with family", pct: 23.6 },
+    { label: "At school with teachers", pct: 15.3 }
+  ];
+
+  function renderBars(containerId, data) {
+    document.getElementById(containerId).innerHTML = data.map(d => `
+      <div class="bar-row">
+        <div class="bar-meta">
+          <span>${d.label}</span>
+          <span>${d.pct}%</span>
+        </div>
+        <div class="bar-track">
+          <div class="bar-fill" style="width:${d.pct}%"></div>
+        </div>
+      </div>
+    `).join("");
+  }
+
+  // 6. TAB NAVIGATION
+  document.querySelectorAll(".tab-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+      document.querySelectorAll(".tab-panel").forEach(p => p.classList.remove("active"));
+      btn.classList.add("active");
+      document.getElementById(btn.dataset.tab).classList.add("active");
+    });
+  });
+
+  // INITIALIZE
+  renderGlossary();
+  loadQuestion();
+  renderRegister();
+  renderBars("recognitionBars", recognitionData);
+  renderBars("contextBars", contextData);
+</script>
+</body>
+</html>
